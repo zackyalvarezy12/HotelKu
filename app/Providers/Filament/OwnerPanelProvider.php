@@ -39,7 +39,7 @@ class OwnerPanelProvider extends PanelProvider
                 NavigationItem::make('Kotak Pesan')
                     ->url('/inbox')
                     ->icon('heroicon-o-chat-bubble-left-right')
-                    ->badge(fn () => Conversation::unreadTotalFor(auth()->user()) ?: null, 'danger'),
+                    ->badge(fn () => Conversation::unreadTotalFor(auth()->user()) ?: null),
             ])
             ->pages([
                 Pages\Dashboard::class,

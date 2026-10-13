@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\BookingStatus;
+use App\Enums\PaymentStatus;
 use App\Models\Concerns\ScopedToManagedHotels;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -148,7 +149,38 @@ class Booking extends Model
 
     public function getIsPaidAttribute(): bool
     {
-        return $this->payments()->where('status', 'paid')->exists();
+        return $this->payments()->where('status', PaymentStatus::Paid->value)->exists();
+    }
+
+    public function confirmPayment(): bool
+    {
+        if ($this->status !== BookingStatus::PendingPayment) {
+            return false;
+        }
+
+        $pendingPayment = $this->payments()
+            ->where('status', PaymentStatus::Pending->value)
+            ->latest('id')
+            ->first();
+
+        if (! $pendingPayment) {
+            return false;
+        }
+
+        $this->payments()
+            ->where('status', PaymentStatus::Pending->value)
+            ->update([
+                'status' => PaymentStatus::Paid->value,
+                'paid_at' => now(),
+            ]);
+
+        $this->update([
+            'status' => BookingStatus::Confirmed,
+            'confirmed_at' => now(),
+            'expires_at' => null,
+        ]);
+
+        return true;
     }
 
     public function canBeCancelled(): bool

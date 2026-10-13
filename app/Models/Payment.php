@@ -21,6 +21,7 @@ class Payment extends Model
         'paid_at',
         'gateway_ref',
         'notes',
+        'rejection_reason',
     ];
 
     protected $casts = [
@@ -35,8 +36,20 @@ class Payment extends Model
         return $this->belongsTo(Booking::class);
     }
 
+    public function reject(string $reason): bool
+    {
+        if ($this->status !== PaymentStatus::Pending) {
+            return false;
+        }
+
+        return $this->update([
+            'status' => PaymentStatus::Rejected,
+            'rejection_reason' => $reason,
+        ]);
+    }
+
     public function getProofUrlAttribute(): ?string
     {
-        return $this->proof_path ? asset('storage/'.$this->proof_path) : null;
+        return $this->proof_path ? route('owner.payments.proof', $this) : null;
     }
 }

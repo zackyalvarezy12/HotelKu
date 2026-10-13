@@ -43,6 +43,31 @@
             </div>
         </div>
 
+        @if ($booking->status->value === 'pending_payment')
+            @if ($booking->latestPayment?->status === \App\Enums\PaymentStatus::Pending)
+                <div class="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                    <p class="font-semibold">Pembayaran menunggu konfirmasi</p>
+                    <p class="mt-1 text-amber-800/90">Bukti sudah dikirim dan sedang diperiksa oleh pemilik hotel.</p>
+                </div>
+            @elseif ($booking->latestPayment?->status === \App\Enums\PaymentStatus::Rejected)
+                <div class="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert">
+                    <p class="font-semibold">Bukti pembayaran ditolak</p>
+                    <p class="mt-1">{{ $booking->latestPayment->rejection_reason }}</p>
+                    <a href="{{ route('bookings.payment.form', $booking) }}" class="btn-primary mt-3 justify-center">Unggah Ulang Bukti</a>
+                </div>
+            @else
+                <div class="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p class="font-semibold">Pembayaran menunggu</p>
+                            <p class="mt-1 text-amber-800/90">Silakan kirim bukti transfer agar reservasi dapat diproses.</p>
+                        </div>
+                        <a href="{{ route('bookings.payment.form', $booking) }}" class="btn-primary justify-center">Bayar Sekarang</a>
+                    </div>
+                </div>
+            @endif
+        @endif
+
         <div class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
             <a href="{{ route('bookings.index') }}" class="btn-secondary justify-center">Kembali ke booking</a>
             <div class="flex flex-col gap-2 sm:flex-row">

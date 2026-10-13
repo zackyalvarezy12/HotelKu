@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookingPaymentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\OwnerReportController;
@@ -37,6 +38,10 @@ Route::get('/hotels/{hotel}', [HotelController::class, 'show'])->name('hotels.sh
 
 // Riwayat booking milik tamu yang sedang login.
 Route::get('/bookings', BookingHistory::class)->middleware('auth')->name('bookings.index');
+Route::get('/bookings/{booking}/payment', [BookingPaymentController::class, 'show'])->middleware('auth')->name('bookings.payment.form');
+Route::post('/bookings/{booking}/payment', [BookingPaymentController::class, 'store'])->middleware('auth')->name('bookings.payment.store');
+Route::post('/bookings/{booking}/confirm-payment', [BookingPaymentController::class, 'confirmOwner'])->middleware('auth')->name('owner.bookings.payment.confirm');
+Route::get('/owner/payments/{payment}/proof', [BookingPaymentController::class, 'showProof'])->middleware('auth')->name('owner.payments.proof');
 Route::get('/bookings/{booking}', BookingDetail::class)->middleware('auth')->name('bookings.show');
 Route::get('/bookings/{booking}/review', BookingReview::class)->middleware('auth')->name('bookings.review');
 Route::get('/inbox', ConversationInbox::class)->middleware('auth')->name('chat.inbox');
