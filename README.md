@@ -30,7 +30,7 @@ Aplikasi reservasi hotel multi-tenant berbasis **Laravel 10** (PHP 8.1+).
 | **2** | Panel Filament owner & super admin + Policy isolasi data + upload foto | ✅ Selesai |
 | **3** | Halaman tamu: beranda + form pencarian, hasil dengan filter, detail hotel (galeri, fasilitas, tipe kamar, peta Leaflet) | ✅ Selesai |
 | **4** | Alur booking: `BookingService` (anti double booking), `pending_payment` + batas bayar, halaman pemesanan & riwayat, command `bookings:expire` | ✅ Selesai |
-| **5** | Pembayaran transfer (upload bukti privat, konfirmasi/penolakan owner, alasan, notifikasi database, unggah ulang), kode voucher, chat tamu–hotel. PDF voucher masih belum tersedia. | 🟡 Berjalan |
+| **5** | Pembayaran transfer (upload bukti privat, konfirmasi/penolakan owner, alasan, notifikasi database, unggah ulang), voucher booking PDF, kode voucher, chat tamu–hotel. | ✅ Selesai |
 | **6** | Laporan & ekspor Excel/PDF serta dashboard okupansi sudah tersedia; finalisasi dan pemeriksaan akhir masih berjalan. | 🟡 Berjalan |
 
 ---
@@ -220,7 +220,7 @@ beberapa booking, ulasan, dan 1 percakapan dengan pesan belum dibaca.
 php artisan test
 ```
 
-Validasi terbaru untuk cakupan booking: **75 tes / 243 assertion lulus** dengan
+Validasi terbaru untuk cakupan booking: **77 tes / 250 assertion lulus** dengan
 `php artisan test --filter=Booking`. Ini bukan hasil seluruh test suite.
 
 Tes memakai database terpisah (`DB_DATABASE=hotel_reservasi_test`, lihat `phpunit.xml`)

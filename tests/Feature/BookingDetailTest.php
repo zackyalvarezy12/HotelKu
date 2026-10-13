@@ -292,4 +292,43 @@ class BookingDetailTest extends TestCase
 
         $this->assertSame(2, $booking->payments()->count());
     }
+
+    public function test_tamu_dapat_mengunduh_voucher_pdf_booking_terkonfirmasi(): void
+    {
+        $booking = Booking::factory()->create([
+            'user_id' => $this->guest->id,
+            'hotel_id' => $this->hotel->id,
+            'room_type_id' => $this->roomType->id,
+            'status' => BookingStatus::Confirmed,
+            'code' => 'BK-VOUCHER-0001',
+        ]);
+
+        $this->actingAs($this->guest)
+            ->get(route('bookings.voucher', $booking))
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/pdf');
+
+        $this->get(route('bookings.show', $booking))
+            ->assertOk()
+            ->assertSee('Unduh Voucher PDF');
+    }
+
+    public function test_voucher_pdf_hanya_bisa_diunduh_untuk_booking_milik_tamu_yang_terkonfirmasi(): void
+    {
+        $booking = Booking::factory()->create([
+            'user_id' => $this->guest->id,
+            'hotel_id' => $this->hotel->id,
+            'room_type_id' => $this->roomType->id,
+            'status' => BookingStatus::PendingPayment,
+        ]);
+        $otherGuest = User::factory()->guest()->create();
+
+        $this->actingAs($otherGuest)
+            ->get(route('bookings.voucher', $booking))
+            ->assertNotFound();
+
+        $this->actingAs($this->guest)
+            ->get(route('bookings.voucher', $booking))
+            ->assertNotFound();
+    }
 }

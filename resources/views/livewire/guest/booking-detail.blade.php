@@ -71,6 +71,9 @@
         <div class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
             <a href="{{ route('bookings.index') }}" class="btn-secondary justify-center">Kembali ke booking</a>
             <div class="flex flex-col gap-2 sm:flex-row">
+                @if (in_array($booking->status, [\App\Enums\BookingStatus::Confirmed, \App\Enums\BookingStatus::CheckedIn, \App\Enums\BookingStatus::Completed], true))
+                    <a href="{{ route('bookings.voucher', $booking) }}" class="btn-secondary justify-center">Unduh Voucher PDF</a>
+                @endif
                 @if ($booking->status->value === 'completed' && ! $booking->review)
                     <a href="{{ route('bookings.review', $booking->id) }}" class="btn-secondary justify-center">Tulis Ulasan</a>
                 @endif
